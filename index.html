@@ -1,0 +1,35 @@
+<html>
+  <head>
+    <!--Load the AJAX API-->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+    google.charts.load('current', {'packages':['gauge']});
+      
+    // Set a callback to run when the Google Visualization API is loaded.
+    google.charts.setOnLoadCallback(drawGauge);
+    
+    var gaugeOptions = {min: 0, max: 100, yellowFrom: 75, yellowTo: 85,
+      redFrom: 85, redTo: 100, minorTicks: 5};
+    var gauge;
+
+    async function drawGauge() {
+
+        let url = '/gauge/data.php';
+        let response = await fetch(url);
+        let fuel_data = await response.json(); // read response body and parse as JSON
+        gaugeData = new google.visualization.DataTable();
+        gaugeData.addColumn('number', 'Fuel');
+        gaugeData.addRows(1);
+        gaugeData.setCell(0, 0, fuel_data.fuel_level);
+
+        gauge = new google.visualization.Gauge(document.getElementById('gauge_div'));
+        gauge.draw(gaugeData, gaugeOptions);
+    }
+
+    </script>
+  </head>
+
+  <body>
+    <div id="gauge_div"></div>
+  </body>
+</html>
